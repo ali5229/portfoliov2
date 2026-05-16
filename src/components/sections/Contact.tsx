@@ -27,11 +27,11 @@ export function Contact() {
           </p>
 
           <a
-            href="mailto:hello@example.com"
+            href="mailto:aliabbas55506@gmail.com"
             className="group mt-10 inline-flex items-center gap-3 border-b border-foreground pb-2 font-display text-2xl tracking-wider hover:text-primary"
           >
             <Mail className="h-5 w-5" />
-            hello@example.com
+            aliabbas55506@gmail.com
             <ArrowUpRight className="h-5 w-5 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
           </a>
         </div>

@@ -4,19 +4,35 @@ import { Section, SectionHeader } from "./Section";
 const groups = [
   {
     title: "Languages",
-    items: ["TypeScript", "Python", "Go", "Rust", "SQL"],
+    items: ["JavaScript", "TypeScript", "C++", "Java", "Python", "SQL"],
   },
   {
     title: "Frontend",
-    items: ["React", "Next.js", "Tailwind", "Framer Motion", "Three.js"],
+    items: ["React", "Next.js", "Tailwind", "Shadcn UI", "React Native"],
   },
   {
     title: "Backend",
-    items: ["Node.js", "PostgreSQL", "Redis", "GraphQL", "tRPC"],
+    items: ["Node.js", "Express", "Redis", "Firebase", "MongoDB"],
+  },
+  {
+    title: "Database",
+    items: ["PostgreSQL", "MongoDB", "MySQL", "SQLite", "Prisma"],
   },
   {
     title: "Tooling",
-    items: ["Docker", "AWS", "Vercel", "GitHub Actions", "Figma"],
+    items: ["Docker", "Dokploy", "Vercel", "GitHub Actions", "Postman"],
+  },
+  {
+    title: "IDEs",
+    items: ["VS Code", "Cursor", "Antigravity", "Google Colab"],
+  },
+  {
+    title: "Designing",
+    items: ["Canva", "Figma", "Photoshop", "Premiere Pro"],
+  },
+  {
+    title: "Cloud",
+    items: ["AWS", "Cloudflare", "Azure", "Digital Ocean", "Netlify"],
   },
 ];
 
@@ -31,7 +47,7 @@ export function Skills() {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ delay: i * 0.1, duration: 0.6 }}
+            transition={{ delay: i * 0.3, duration: 0.6 }}
             className="group relative border border-border bg-card p-6 transition-colors hover:border-primary"
           >
             <div className="mb-4 flex items-center gap-2">

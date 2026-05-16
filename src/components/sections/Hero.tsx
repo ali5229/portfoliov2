@@ -148,7 +148,7 @@ export function Hero() {
           </motion.span>
 
           <div className="font-display text-5xl leading-[0.9] text-primary md:text-6xl lg:text-7xl">
-            {["BUILD", "FAST", "SHIP", "SMART"].map((w, i) => (
+            {["I BUILD", "BUSINESS", "PROBLEM SOLVING", "SOLUTIONS"].map((w, i) => (
               <motion.div
                 key={w}
                 initial={{ opacity: 0, x: -30 }}
@@ -167,10 +167,10 @@ export function Hero() {
             className="-mt-2"
           >
             <span className="font-script text-5xl text-primary md:text-6xl">
-              smart
+              through
             </span>
             <span className="ml-2 font-display text-2xl tracking-widest text-foreground md:text-3xl">
-              NOT HARD
+              TECHNOLOGY
             </span>
           </motion.div>
 
@@ -180,8 +180,8 @@ export function Hero() {
             transition={{ delay: 1.3 }}
             className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground"
           >
-            I design and engineer performant, beautifully crafted digital
-            products from the ground up — bridging code and editorial design.
+            I design and engineer performant, professionally crafted digital
+            products from the ground up — bridging code and productive design & architecture.
           </motion.p>
 
           <motion.div

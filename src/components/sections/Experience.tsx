@@ -3,29 +3,18 @@ import { Section, SectionHeader } from "./Section";
 
 const items = [
   {
-    year: "2024 — Now",
-    role: "Senior Software Engineer",
-    company: "Vertex Labs",
-    desc: "Leading platform engineering for a realtime collaboration product.",
+    year: "2025 — Now",
+    role: "Software Engineer",
+    company: "Switch2iTech",
+    desc: "Developing and maintaining software solutions for businesses.",
   },
   {
-    year: "2022 — 2024",
-    role: "Full-stack Engineer",
-    company: "Northwind Studio",
-    desc: "Built design systems and headless commerce experiences for global brands.",
+    year: "2025(3 months)",
+    role: "Full-stack Developer Intern",
+    company: "DevelopersHub.co",
+    desc: "Developed multiple projects, collaborated with the team to deliver complete tasks in allocated time.",
   },
-  {
-    year: "2020 — 2022",
-    role: "Frontend Engineer",
-    company: "Loop & Co.",
-    desc: "Shipped marketing sites and interactive editorials with motion-first design.",
-  },
-  {
-    year: "2019 — 2020",
-    role: "Engineering Intern",
-    company: "Stratus Inc.",
-    desc: "Worked on internal tooling and dashboards used by 200+ engineers.",
-  },
+
 ];
 
 export function Experience() {
@@ -45,7 +34,7 @@ export function Experience() {
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ delay: i * 0.08, duration: 0.6 }}
+              transition={{ delay: i * 0.10, duration: 0.6 }}
               className="relative grid grid-cols-1 gap-4 pl-10 md:grid-cols-2 md:gap-12 md:pl-0"
             >
               <span className="absolute left-0 top-2 z-10 h-6 w-6 -translate-x-[11px] border-2 border-background bg-primary md:left-1/2 md:-translate-x-1/2" />

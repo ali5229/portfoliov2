@@ -1,11 +1,11 @@
 import { Github, Linkedin, Twitter, Mail, Instagram } from "lucide-react";
 
 const links = [
-  { icon: Github, href: "https://github.com", label: "GitHub" },
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  { icon: Mail, href: "mailto:hello@example.com", label: "Email" },
+  { icon: Github, href: "https://github.com/ali5229", label: "GitHub" },
+  { icon: Linkedin, href: "https://www.linkedin.com/in/ali5229/", label: "LinkedIn" },
+  { icon: Twitter, href: "https://x.com/aliabbas55506", label: "Twitter" },
+  { icon: Instagram, href: "https://www.instagram.com/m_ali_abbas_404/", label: "Instagram" },
+  { icon: Mail, href: "mailto:aliabbas55506@gmail.com", label: "Email" },
 ];
 
 export function SocialSidebar() {

@@ -4,28 +4,28 @@ import { Section, SectionHeader } from "./Section";
 
 const projects = [
   {
-    title: "Nebula Analytics",
-    tag: "SaaS · Dashboard",
-    desc: "Realtime analytics platform processing 2B+ events per day with sub-second queries.",
-    stack: ["Next.js", "ClickHouse", "Kafka"],
+    title: "Distribution System",
+    tag: "Business Product",
+    desc: "All-in-one system for wholesalers and distributors to run POS, route sales, warehouse stock, and supplier purchases from a single workflow. Sales, payments, and returns flow into accounting through vouchers and a structured chart of accounts, so books stay current without duplicate data entry. Helps businesses track who owes what, monitor cash and bank activity, and make decisions from real-time financial and stock reports.",
+    stack: ["Next.js", "Prisma", "PostgreSQL"],
   },
   {
-    title: "Atlas Design System",
-    tag: "Open Source",
-    desc: "Headless component library powering 40+ products across the company.",
-    stack: ["React", "Radix", "TS"],
+    title: "Poultry Management System",
+    tag: "Business Product",
+    desc: "Manages the full poultry cycle—flocks, feed, mortality, and stock—linked to purchases, issues, and trading. Automates double-entry accounting with ledgers, vouchers, and trial balance so books stay aligned with daily operations. Delivers FCR, flock timelines, and profit reports so businesses can control costs and improve flock-level returns.",
+    stack: ["Next.js", "Prisma", "PostgreSQL"],
   },
   {
-    title: "Halo Commerce",
-    tag: "E-commerce",
-    desc: "Headless storefront with custom checkout and 99 Lighthouse score.",
-    stack: ["Remix", "Stripe", "Edge"],
+    title: "Personalized Workout Application",
+    tag: "Final Year Project",
+    desc: "Developed an AI-driven mobile app for personalized workout planning. Integrated OpenAI API to generate monthly plans based on user health data. Built custom exercise database with categorized guides and videos.",
+    stack: ["React Native", "Firebase", "OpenAI API"],
   },
   {
-    title: "Pulse AI",
-    tag: "Machine Learning",
-    desc: "On-device transcription and summarization tool for meetings.",
-    stack: ["Whisper", "Rust", "WASM"],
+    title: "Video/Voice Call App",
+    tag: "Side Project",
+    desc: "On-device transcription and summarization tool for meetings. Integrated ZegoCloud for real-time voice/video calling and Jetpack Compose for a smooth UI experience.",
+    stack: ["Java", "ZegoCloud", "JetpackCompose"],
   },
 ];
 
@@ -45,7 +45,7 @@ export function Projects() {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ delay: (i % 2) * 0.1, duration: 0.6 }}
+            transition={{ delay: (i % 2) * 0.5, duration: 0.9 }}
             className="group relative overflow-hidden bg-background p-8 md:p-10"
           >
             <div className="absolute inset-0 origin-bottom scale-y-0 bg-primary transition-transform duration-500 ease-out group-hover:scale-y-100" />
