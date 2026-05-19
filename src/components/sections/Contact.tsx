@@ -1,8 +1,46 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Mail } from "lucide-react";
+import { ArrowUpRight, Mail, Loader2 } from "lucide-react";
 import { Section } from "./Section";
+import { toast } from "sonner";
 
 export function Contact() {
+  const [isPending, setIsPending] = useState(false);
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsPending(true);
+
+    try {
+      const formData = new FormData(event.target as HTMLFormElement);
+
+      formData.append("access_key", "44f019d2-988a-4f3c-b08d-b7d31138b24c");
+
+      const object = Object.fromEntries(formData);
+      const json = JSON.stringify(object);
+
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: json
+      }).then((res) => res.json());
+
+      if (res.success) {
+        toast.success(res.message || "Message sent successfully!");
+        (event.target as HTMLFormElement).reset();
+      } else {
+        toast.error(res.message || "Failed to send message.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error instanceof Error ? error.message : "An error occurred. Please try again.");
+    } finally {
+      setIsPending(false);
+    }
+  };
   return (
     <Section id="contact" className="!py-32">
       <div className="grid grid-cols-1 gap-16 md:grid-cols-12">
@@ -37,12 +75,12 @@ export function Contact() {
         </div>
 
         <form
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={onSubmit}
           className="flex flex-col gap-6 md:col-span-5"
         >
           {[
-            { label: "Name", type: "text" },
-            { label: "Email", type: "email" },
+            { label: "Name", type: "text", name: "name" },
+            { label: "Email", type: "email", name: "email" },
           ].map((f) => (
             <label key={f.label} className="block">
               <span className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
@@ -50,6 +88,8 @@ export function Contact() {
               </span>
               <input
                 type={f.type}
+                name={f.name}
+                required
                 className="w-full border-0 border-b border-border bg-transparent py-2 text-sm text-foreground outline-none transition-colors focus:border-primary"
               />
             </label>
@@ -59,16 +99,28 @@ export function Contact() {
               Message
             </span>
             <textarea
+              name="message"
               rows={4}
+              required
               className="w-full resize-none border-0 border-b border-border bg-transparent py-2 text-sm text-foreground outline-none transition-colors focus:border-primary"
             />
           </label>
           <button
             type="submit"
-            className="group mt-2 inline-flex w-fit items-center gap-2 bg-primary px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em] text-primary-foreground transition-transform hover:scale-105"
+            disabled={isPending}
+            className="group mt-2 inline-flex w-fit items-center gap-2 bg-primary px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em] text-primary-foreground transition-transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
           >
-            Send Message
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            {isPending ? (
+              <>
+                Sending...
+                <Loader2 className="h-4 w-4 animate-spin" />
+              </>
+            ) : (
+              <>
+                Send Message
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </>
+            )}
           </button>
         </form>
       </div>

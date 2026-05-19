@@ -5,8 +5,8 @@ export function Footer() {
         <span className="font-display text-xl tracking-widest text-foreground">
           A<span className="text-primary">.</span>
         </span>
-        <span>© 2026 — Crafted with care</span>
-        <span>HASSELBLAD · X2D · 100C</span>
+        <span>© 2026 — Crafted By Ali Abbas</span>
+        <span>EMBRACE TECH & EVOLVE</span>
       </div>
     </footer>
   );
