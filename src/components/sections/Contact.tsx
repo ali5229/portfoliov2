@@ -3,36 +3,35 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Mail, Loader2 } from "lucide-react";
 import { Section } from "./Section";
 import { toast } from "sonner";
-import { submitContactForm } from "../../lib/contact";
+import { useForm } from "react-hook-form";
+import useWeb3Forms from "@web3forms/react";
 
 export function Contact() {
+  const { register, reset, handleSubmit } = useForm();
   const [isPending, setIsPending] = useState(false);
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsPending(true);
-
-    const form = event.target as HTMLFormElement;
-    const name = (form.elements.namedItem("name") as HTMLInputElement).value;
-    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
-    const message = (form.elements.namedItem("message") as HTMLTextAreaElement).value;
-
-    try {
-      const res = await submitContactForm({ data: { name, email, message } });
-
-      if (res.success) {
-        toast.success(res.message || "Message sent successfully!");
-        form.reset();
-      } else {
-        toast.error(res.message || "Failed to send message.");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error(error instanceof Error ? error.message : "An error occurred. Please try again.");
-    } finally {
+  const { submit } = useWeb3Forms({
+    access_key: "44f019d2-988a-4f3c-b08d-b7d31138b24c",
+    settings: {
+      from_name: "Portfolio Contact",
+      subject: "New Contact Message",
+    },
+    onSuccess: (msg) => {
       setIsPending(false);
-    }
+      toast.success(msg || "Message sent successfully!");
+      reset();
+    },
+    onError: (msg) => {
+      setIsPending(false);
+      toast.error(msg || "Failed to send message.");
+    },
+  });
+
+  const onSubmit = (data: any) => {
+    setIsPending(true);
+    submit(data);
   };
+
   return (
     <Section id="contact" className="!py-32">
       <div className="grid grid-cols-1 gap-16 md:grid-cols-12">
@@ -67,7 +66,7 @@ export function Contact() {
         </div>
 
         <form
-          onSubmit={onSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6 md:col-span-5"
         >
           {[
@@ -80,8 +79,7 @@ export function Contact() {
               </span>
               <input
                 type={f.type}
-                name={f.name}
-                required
+                {...register(f.name as any, { required: true })}
                 className="w-full border-0 border-b border-border bg-transparent py-2 text-sm text-foreground outline-none transition-colors focus:border-primary"
               />
             </label>
@@ -91,9 +89,8 @@ export function Contact() {
               Message
             </span>
             <textarea
-              name="message"
+              {...register("message", { required: true })}
               rows={4}
-              required
               className="w-full resize-none border-0 border-b border-border bg-transparent py-2 text-sm text-foreground outline-none transition-colors focus:border-primary"
             />
           </label>
