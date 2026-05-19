@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Mail, Loader2 } from "lucide-react";
 import { Section } from "./Section";
 import { toast } from "sonner";
+import { submitContactForm } from "../../lib/contact";
 
 export function Contact() {
   const [isPending, setIsPending] = useState(false);
@@ -11,26 +12,17 @@ export function Contact() {
     event.preventDefault();
     setIsPending(true);
 
+    const form = event.target as HTMLFormElement;
+    const name = (form.elements.namedItem("name") as HTMLInputElement).value;
+    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+    const message = (form.elements.namedItem("message") as HTMLTextAreaElement).value;
+
     try {
-      const formData = new FormData(event.target as HTMLFormElement);
-
-      formData.append("access_key", "44f019d2-988a-4f3c-b08d-b7d31138b24c");
-
-      const object = Object.fromEntries(formData);
-      const json = JSON.stringify(object);
-
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json"
-        },
-        body: json
-      }).then((res) => res.json());
+      const res = await submitContactForm({ data: { name, email, message } });
 
       if (res.success) {
         toast.success(res.message || "Message sent successfully!");
-        (event.target as HTMLFormElement).reset();
+        form.reset();
       } else {
         toast.error(res.message || "Failed to send message.");
       }
