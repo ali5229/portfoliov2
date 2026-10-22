@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { MotionArming } from "@/components/MotionArming";
 import { site } from "@/lib/data";
 import "./globals.css";
 
@@ -23,16 +24,28 @@ const FONTS_HREF =
 // IntersectionObserver available and the user hasn't asked for reduced motion.
 const armMotion = `if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js')`;
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: armMotion }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
         <link rel="stylesheet" href={FONTS_HREF} />
       </head>
-      <body>{children}</body>
+      {/* Extensions (Grammarly, dark-mode tools…) often add attributes to <body>; don't treat that as a mismatch. */}
+      <body suppressHydrationWarning>
+        <MotionArming />
+        {children}
+      </body>
     </html>
   );
 }

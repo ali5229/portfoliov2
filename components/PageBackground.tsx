@@ -492,6 +492,8 @@ export function PageBackground() {
 
     /* ----- frame ----- */
     const paint = (now: number, animated: boolean) => {
+      // A detached or not-yet-laid-out canvas measures 0×0, and drawImage throws on a 0-size source.
+      if (!w || !h || !grid.width || !grid.height) return;
       ctx.clearRect(0, 0, w, h);
       ctx.globalAlpha = 1;
       ctx.drawImage(grid, 0, 0, w, h);
@@ -502,6 +504,7 @@ export function PageBackground() {
     };
 
     const loop = (now: number) => {
+      raf = requestAnimationFrame(loop); // schedule first, so one bad frame can't stop the loop
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       heroBox = heroRect();
@@ -509,7 +512,6 @@ export function PageBackground() {
       build += (targetBuild() - build) * (1 - Math.exp(-dt * 9)); // smooth scrub
       flow += dt;
       paint(now, true);
-      raf = requestAnimationFrame(loop);
     };
 
     const update = () => {
