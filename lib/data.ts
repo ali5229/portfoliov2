@@ -51,7 +51,9 @@ export const nav = [
 export const hero = {
   label: "Software Engineer · Sargodha, Pakistan",
   /** Words rise in one by one; the emphasis part gets the accent colour and the drawn underline. */
-  headline: "I build the software businesses",
+  headlineLead: "I build the software",
+  /** Cycles every ~2.8s after the intro. The first entry is the static word (SSR, reduced motion, screen readers). */
+  rotatingNouns: ["businesses", "distributors", "poultry farms", "tyre shops", "traders", "fish markets"],
   headlineEmphasis: "run their day on.",
   lede: "POS, inventory and accounting systems used daily by distributors, farms and traders.",
   ledeStrong: "I write the code, deploy it to production, and keep it running.",

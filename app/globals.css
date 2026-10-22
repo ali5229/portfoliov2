@@ -548,7 +548,6 @@
     vector-effect: non-scaling-stroke;
   }
   .hero > div:first-child > .label,
-  .lede,
   .cta,
   .meta-row {
     animation: fadeup 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -556,14 +555,82 @@
   .hero > div:first-child > .label {
     animation-delay: 0s;
   }
-  .lede {
-    animation-delay: 0.95s;
-  }
   .cta {
-    animation-delay: 1.1s;
+    animation-delay: 1.5s;
   }
   .meta-row {
-    animation-delay: 1.25s;
+    animation-delay: 1.65s;
+  }
+
+  /* lede: words rise one after another, handing off from the headline */
+  .lede .lw {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+  .lede .lw > span {
+    display: inline-block;
+    animation: rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(0.95s + var(--i, 0) * 35ms);
+  }
+
+  /* headline noun: cycles through sectors; the mask width slides so the line reflows smoothly */
+  /* Block-level so the noun always owns its line: swaps never reflow the rest of the headline, and
+     the text on either side still gets text-wrap: balance (forced <br>s would defeat it). */
+  .h-anim .w.rot {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    position: relative;
+    white-space: nowrap;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (max-width: 360px) {
+    .h-anim .w.rot {
+      white-space: normal;
+    }
+  }
+  /* After a block-level noun, Chrome won't balance the trailing lines, so the emphasis gets its own
+     box: it balances internally ("run their / day on.") and the underline sizes to it. */
+  .h-anim .hl {
+    display: inline-block;
+  }
+  .hl-tail {
+    position: relative;
+    white-space: nowrap;
+  }
+  /* words inside the tail restart nth-child counting; keep them in their 3rd/4th emphasis slots */
+  .h-anim .hl-tail .w:nth-child(1) > span {
+    animation-delay: 0.66s;
+  }
+  .h-anim .hl-tail .w:nth-child(2) > span {
+    animation-delay: 0.73s;
+  }
+  /* old word clears out fast, new word follows a beat later, so they never sit on top of each other */
+  .h-anim .w.rot > span.enter {
+    animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.14s;
+  }
+  .h-anim .w.rot > span.leave {
+    position: absolute;
+    left: 0;
+    top: 0;
+    animation: rise-out 0.38s cubic-bezier(0.6, 0, 0.8, 0.3) forwards;
+    animation-delay: 0s;
+  }
+  .h-anim .w.rot > span.rot-measure {
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: hidden;
+    animation: none;
+  }
+
+  /* page background: fixed grid + packets + side chips (canvas); fades in after the hero intro */
+  .page-grid {
+    animation: grid-in 1.4s ease 0.9s both;
   }
   .avail i {
     animation: pulse 2.4s ease-out infinite;
@@ -969,6 +1036,17 @@
   to {
     transform: none;
     opacity: 1;
+  }
+}
+@keyframes rise-out {
+  to {
+    transform: translateY(-105%) rotate(-4deg);
+    opacity: 0;
+  }
+}
+@keyframes grid-in {
+  from {
+    opacity: 0;
   }
 }
 @keyframes draw {
