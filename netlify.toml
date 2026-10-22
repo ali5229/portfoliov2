@@ -1,4 +1,4 @@
 [build]
   command = "npm run build"
-  # Next.js output; overrides the old "dist/client" publish dir still set in the Netlify UI.
-  publish = ".next"
+  # Static export from next.config.ts (output: "export"). Overrides the old "dist/client" set in the Netlify UI.
+  publish = "out"
