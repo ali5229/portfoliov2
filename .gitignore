@@ -33,3 +33,9 @@ dist-ssr
 
 # Local Netlify folder
 .netlify
+
+# Next.js
+.next
+out
+next-env.d.ts
+*.tsbuildinfo
