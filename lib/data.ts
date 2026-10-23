@@ -74,8 +74,8 @@ export const receipt = {
     { label: "CASHIER", value: "M. Ali Abbas" },
   ],
   items: [
-    { label: "Distribution + POS system", value: "1 × prod" },
-    { label: "Poultry farm module (FCR)", value: "1 × prod" },
+    { label: "Distribution + POS system", value: "15 x prod" },
+    { label: "Poultry farm module (FCR)", value: "5 x prod" },
     { label: "Multi-tenant DB routing", value: "1 × prod" },
     { label: "FBR Digital Invoicing API", value: "✓ live", ok: true },
     { label: "Daily backups → Cloudflare R2", value: "✓ 24h", ok: true },
