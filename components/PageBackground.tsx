@@ -2,9 +2,9 @@
 
 import { useEffect, useRef } from "react";
 import { useMotionArmed } from "@/hooks/useMotionArmed";
+import { CHIP_EXTENT, gridLayout, PITCH } from "@/lib/grid";
 
 /* ---------- grid + packets ---------- */
-const PITCH = 32; // grid spacing, px
 const HERO_PACKETS = 7;
 const STRAY_PACKETS = 3; // sparse packets over the rest of the page
 const SPEED = 70; // px per second
@@ -61,7 +61,7 @@ const TRACES: Cell[][] = [
     [2, 3],
   ],
 ];
-const EXTENT = { minX: -1, maxX: 2, minY: -6, maxY: 9 };
+const EXTENT = CHIP_EXTENT;
 /* Build order: 0 pad A · 1 trace A · 2–4 traces B–D · 5 body · 6 pins · 7 power on.
    Stage 1 (hero) shows just element 0; the last section shows all 8. */
 const ELEMENTS = 8;
@@ -74,7 +74,6 @@ const SECTIONS = [
   "#stack",
   "#contact",
 ];
-const CHIP_MARGIN = 8; // min px between a chip and the content column / screen edge
 
 type Pt = { x: number; y: number };
 type Packet = {
@@ -101,7 +100,8 @@ const DIRS = [
 
 /** Fixed full-page ledger grid. Packets run along it (dense in the hero, sparse elsewhere), and in
  *  the side margins two circuit chips transform with scroll: the left one un-routes from complete
- *  to a single pad, the right one routes from a single pad to a powered chip at Contact.
+ *  to a single pad, the right one routes from a single pad to a powered chip at Contact. On mouse
+ *  devices a trace follows the pointer along the grid and fades out behind it.
  *  Reduced motion / unarmed: static grid only. The loop pauses in hidden tabs. */
 export function PageBackground() {
   const armed = useMotionArmed();
@@ -187,24 +187,16 @@ export function PageBackground() {
         ay,
         Math.ceil((header - EXTENT.minY * PITCH) / PITCH) * PITCH,
       );
-      const target = colLeft / 2 - PITCH / 2; // body is 1 cell wide
-      for (const phase of [0, PITCH / 2]) {
-        const o = (((w / 2 + phase) % PITCH) + PITCH) % PITCH;
-        const ax = o + Math.round((target - o) / PITCH) * PITCH;
-        // mirrored chip: x → 1 − x, so its extent is [1 − maxX, 1 − minX] cells
-        const minX = ax + (1 - EXTENT.maxX) * PITCH;
-        const maxX = ax + (1 - EXTENT.minX) * PITCH;
-        if (minX >= CHIP_MARGIN && maxX <= colLeft - CHIP_MARGIN) {
-          ox = o;
-          chips = [
-            { ax, ay, mirror: true },
-            { ax: w - ax - PITCH, ay, mirror: false },
-          ];
-          return;
-        }
-      }
-      ox = (((w / 2) % PITCH) + PITCH) % PITCH;
-      chips = [null, null]; // gutters too narrow: grid only
+      const layout = gridLayout(w, colLeft);
+      ox = layout.ox;
+      const ax = layout.chipAx;
+      chips =
+        ax === null
+          ? [null, null] // gutters too narrow: grid only
+          : [
+              { ax, ay, mirror: true },
+              { ax: w - ax - PITCH, ay, mirror: false },
+            ];
     };
 
     const measure = () => {
@@ -490,6 +482,119 @@ export function PageBackground() {
       }
     };
 
+    /* ----- cursor trail ----- */
+    // As the mouse moves, a trace routes along the grid behind it (right-angle turns, like the chips'
+    // traces) and fades out. The real cursor stays; this lives on the background, so it passes under
+    // cards, dims over text, and disappears shortly after the mouse stops.
+    type TrailPt = { x: number; y: number; t: number };
+    const trailState = {
+      on: false, // pointer inside the window
+      quiet: 0, // 0..1 dimming over text
+      quietTarget: false,
+      head: null as Pt | null, // moving tip, px
+      node: null as Pt | null, // last queued grid intersection
+      queue: [] as Pt[], // intersections the tip still has to reach
+      pts: [] as TrailPt[], // corners already passed, with the time they were passed
+      moved: 0, // time of the last pointer move
+    };
+    const TRAIL_LIFE = 550; // ms a trail corner stays visible
+    const TIP_SPEED = 1100; // px/s, plus catch-up when the queue grows
+    const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+    const snap = (x: number, y: number): Pt => ({
+      x: ox + Math.round((x - ox) / PITCH) * PITCH + 0.5,
+      y: Math.round(y / PITCH) * PITCH + 0.5,
+    });
+    const onPointer = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      const t = e.target instanceof Element ? e.target : null;
+      trailState.quietTarget = !!t?.closest(
+        "p, li, td, h1, h2, h3, h4, .label, .receipt",
+      );
+      trailState.on = true;
+      trailState.moved = performance.now();
+      const n = snap(e.clientX, e.clientY);
+      const last = trailState.node;
+      if (!last || !trailState.head) {
+        trailState.head = { ...n };
+        trailState.node = n;
+        return;
+      }
+      if (n.x === last.x && n.y === last.y) return;
+      // route along the grid: the longer leg first, then turn
+      const corner =
+        Math.abs(n.x - last.x) >= Math.abs(n.y - last.y)
+          ? { x: n.x, y: last.y }
+          : { x: last.x, y: n.y };
+      if (corner.x !== n.x || corner.y !== n.y) trailState.queue.push(corner);
+      trailState.queue.push(n);
+      if (trailState.queue.length > 16)
+        trailState.queue.splice(0, trailState.queue.length - 16);
+      trailState.node = n;
+    };
+    const onLeave = (e: MouseEvent) => {
+      if (!e.relatedTarget) trailState.on = false;
+    };
+
+    const stepCursor = (dt: number, now: number) => {
+      const st = trailState;
+      st.quiet +=
+        ((st.quietTarget ? 1 : 0) - st.quiet) * (1 - Math.exp(-dt * 10));
+      let budget = (TIP_SPEED + st.queue.length * 250) * dt;
+      while (st.head && st.queue.length && budget > 0) {
+        const to = st.queue[0];
+        const d = Math.abs(to.x - st.head.x) + Math.abs(to.y - st.head.y);
+        if (d <= budget) {
+          budget -= d;
+          st.head = { ...to };
+          st.pts.push({ ...to, t: now });
+          st.queue.shift();
+        } else {
+          // segments are axis-aligned, so move along whichever axis differs
+          if (to.x !== st.head.x)
+            st.head.x += Math.sign(to.x - st.head.x) * budget;
+          else st.head.y += Math.sign(to.y - st.head.y) * budget;
+          budget = 0;
+        }
+      }
+      while (st.pts.length && now - st.pts[0].t > TRAIL_LIFE) st.pts.shift();
+    };
+
+    const drawCursor = (now: number) => {
+      const st = trailState;
+      if (!st.head) return;
+      const dim = 1 - 0.6 * st.quiet;
+      // tip fades once the mouse has been still for a moment, or has left the window
+      const idle = now - st.moved;
+      const tipAlpha =
+        (st.on ? 1 : 0) * Math.max(0, 1 - Math.max(0, idle - 250) / 450) * dim;
+      const path = [...st.pts, { ...st.head, t: now }];
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.lineCap = "round";
+      for (let i = 1; i < path.length; i++) {
+        const age = (now - path[i - 1].t) / TRAIL_LIFE;
+        const alpha = Math.max(0, 1 - age) * 0.75 * dim;
+        if (alpha <= 0.01) continue;
+        ctx.globalAlpha = alpha;
+        ctx.beginPath();
+        ctx.moveTo(path[i - 1].x, path[i - 1].y);
+        ctx.lineTo(path[i].x, path[i].y);
+        ctx.stroke();
+      }
+      if (tipAlpha > 0.01) {
+        ctx.fillStyle = accent;
+        ctx.globalAlpha = 0.18 * tipAlpha;
+        ctx.beginPath();
+        ctx.arc(st.head.x, st.head.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 0.9 * tipAlpha;
+        ctx.beginPath();
+        ctx.arc(st.head.x, st.head.y, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    };
+
     /* ----- frame ----- */
     const paint = (now: number, animated: boolean) => {
       // A detached or not-yet-laid-out canvas measures 0×0, and drawImage throws on a 0-size source.
@@ -501,6 +606,7 @@ export function PageBackground() {
       drawPackets(now);
       drawChip(chips[0], ELEMENTS + 1 - build); // left: complete → single pad
       drawChip(chips[1], build); // right: single pad → powered
+      if (fine) drawCursor(now);
     };
 
     const loop = (now: number) => {
@@ -511,6 +617,7 @@ export function PageBackground() {
       stepPackets(dt, now);
       build += (targetBuild() - build) * (1 - Math.exp(-dt * 9)); // smooth scrub
       flow += dt;
+      if (fine) stepCursor(dt, now);
       paint(now, true);
     };
 
@@ -559,6 +666,10 @@ export function PageBackground() {
     ro.observe(canvas);
     ro.observe(document.body); // page height changes move the section anchors
     document.addEventListener("visibilitychange", update);
+    if (fine && armed) {
+      window.addEventListener("pointermove", onPointer, { passive: true });
+      document.addEventListener("mouseout", onLeave);
+    }
     const scheme = matchMedia("(prefers-color-scheme: dark)");
     scheme.addEventListener("change", recolor);
     update();
@@ -567,6 +678,8 @@ export function PageBackground() {
       cancelAnimationFrame(raf);
       ro.disconnect();
       document.removeEventListener("visibilitychange", update);
+      window.removeEventListener("pointermove", onPointer);
+      document.removeEventListener("mouseout", onLeave);
       scheme.removeEventListener("change", recolor);
     };
   }, [armed]);

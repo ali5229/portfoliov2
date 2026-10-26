@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { PageBackground } from "@/components/PageBackground";
 import { SectionHead } from "@/components/SectionHead";
+import { ScrollTrace } from "@/components/ScrollTrace";
 import { SectorsStrip } from "@/components/SectorsStrip";
 import { SideProjects } from "@/components/SideProjects";
 import { StackScanner } from "@/components/StackScanner";
@@ -44,6 +45,7 @@ export default function Home() {
         <Contact />
       </main>
       <Footer />
+      <ScrollTrace />
     </>
   );
 }

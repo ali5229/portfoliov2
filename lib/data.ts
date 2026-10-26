@@ -12,7 +12,12 @@ export type Case = {
   featured?: boolean;
 };
 
-export type SideProject = { label: string; title: string; body: string; tags?: string[] };
+export type SideProject = {
+  label: string;
+  title: string;
+  body: string;
+  tags?: string[];
+};
 
 export type Job = {
   period: string;
@@ -37,7 +42,7 @@ export const site = {
     { label: "LinkedIn ↗", href: "https://www.linkedin.com/in/ali5229/" },
     { label: "X ↗", href: "https://x.com/aliabbas55506" },
   ],
-  footer: { copyright: "© 2026 Muhammad Ali Abbas", },
+  footer: { copyright: "© 2026 Muhammad Ali Abbas" },
 };
 
 export const nav = [
@@ -48,12 +53,30 @@ export const nav = [
   { label: "Contact", href: "#contact" },
 ];
 
+/** Pads on the scroll trace (the custom scrollbar), top to bottom. `target` is a CSS selector. */
+export const traceSections = [
+  { label: "Top", target: "[data-hero]" },
+  { label: "Work", target: "#work" },
+  { label: "Architecture", target: "#architecture" },
+  { label: "Projects", target: "#projects" },
+  { label: "Experience", target: "#experience" },
+  { label: "Stack", target: "#stack" },
+  { label: "Contact", target: "#contact" },
+];
+
 export const hero = {
   label: "Software Engineer · Sargodha, Pakistan",
   /** Words rise in one by one; the emphasis part gets the accent colour and the drawn underline. */
   headlineLead: "I build the software",
   /** Cycles every ~2.8s after the intro. The first entry is the static word (SSR, reduced motion, screen readers). */
-  rotatingNouns: ["businesses", "distributors", "poultry farms", "tyre shops", "traders", "fish markets"],
+  rotatingNouns: [
+    "businesses",
+    "distributors",
+    "poultry farms",
+    "tyre shops",
+    "traders",
+    "fish markets",
+  ],
   headlineEmphasis: "run their day on.",
   lede: "POS, inventory and accounting systems used daily by distributors, farms and traders.",
   ledeStrong: "I write the code, deploy it to production, and keep it running.",
@@ -89,7 +112,14 @@ export const receipt = {
 
 export const sectors = {
   label: "Running at businesses in",
-  list: ["Dry fruit", "Tyres", "Fish market", "Cement", "Poultry", "Wholesale distribution"],
+  list: [
+    "Dry fruit",
+    "Tyres",
+    "Fish market",
+    "Cement",
+    "Poultry",
+    "Wholesale distribution",
+  ],
 };
 
 export const work = {
@@ -105,11 +135,26 @@ export const work = {
       "One workflow for wholesalers and distributors: counter sales, route sales, warehouse stock and supplier purchases. Every sale, payment and return posts to the books automatically.",
     tags: ["Next.js", "Prisma", "PostgreSQL", "shadcn/ui"],
     ledger: [
-      { entry: "Accounts", text: "Vouchers and a chart of accounts so sales flow into accounting without double entry." },
-      { entry: "Receivable", text: "Customer and supplier ledgers that show who owes what at any moment." },
-      { entry: "Per-client", text: "Configurable themes, screen-level permissions and invoice layouts from one codebase." },
-      { entry: "Tax", text: "FBR Digital Invoicing API integration for compliant e-invoices." },
-      { entry: "Audit", text: "Detailed user activity logs with filtering for traceability." },
+      {
+        entry: "Accounts",
+        text: "Vouchers and a chart of accounts so sales flow into accounting without double entry.",
+      },
+      {
+        entry: "Receivable",
+        text: "Customer and supplier ledgers that show who owes what at any moment.",
+      },
+      {
+        entry: "Per-client",
+        text: "Configurable themes, screen-level permissions and invoice layouts from one codebase.",
+      },
+      {
+        entry: "Tax",
+        text: "FBR Digital Invoicing API integration for compliant e-invoices.",
+      },
+      {
+        entry: "Audit",
+        text: "Detailed user activity logs with filtering for traceability.",
+      },
     ],
   } satisfies Case,
   duo: [
@@ -120,9 +165,18 @@ export const work = {
         "Tracks the full flock cycle and ties it to money: farm, unit and flock finances, daily feed, mortality and warehouse stock issuance.",
       tags: ["Next.js", "Prisma", "PostgreSQL"],
       ledger: [
-        { entry: "FCR", text: "Feed conversion ratio per flock, from daily feed and weight data." },
-        { entry: "Books", text: "Double-entry ledgers and trial balance aligned with daily operations." },
-        { entry: "Reports", text: "Flock timelines and profit reports to control cost per bird." },
+        {
+          entry: "FCR",
+          text: "Feed conversion ratio per flock, from daily feed and weight data.",
+        },
+        {
+          entry: "Books",
+          text: "Double-entry ledgers and trial balance aligned with daily operations.",
+        },
+        {
+          entry: "Reports",
+          text: "Flock timelines and profit reports to control cost per bird.",
+        },
       ],
     },
     {
@@ -132,9 +186,18 @@ export const work = {
         "I run what I ship. Client apps live on a Hostinger VPS managed through Dokploy, with off-server backups.",
       tags: ["Dokploy", "Hostinger VPS", "Cloudflare R2", "Redis"],
       ledger: [
-        { entry: "Deploy", text: "Dokploy on VPS, server setup and troubleshooting over SSH (PuTTY)." },
-        { entry: "Backup", text: "Automated daily database backups stored in Cloudflare R2." },
-        { entry: "Support", text: "Production fixes and client-specific changes on a live system." },
+        {
+          entry: "Deploy",
+          text: "Dokploy on VPS, server setup and troubleshooting over SSH (PuTTY).",
+        },
+        {
+          entry: "Backup",
+          text: "Automated daily database backups stored in Cloudflare R2.",
+        },
+        {
+          entry: "Support",
+          text: "Production fixes and client-specific changes on a live system.",
+        },
       ],
     },
   ] satisfies Case[],
@@ -212,7 +275,11 @@ export const stack = {
   title: "What I use",
   intro: "Highlighted tools are the ones I use in production every week.",
   tallyLabel: "Items scanned",
-  status: { ready: "Ready to scan", scanning: "Scanning…", done: "All items in stock" },
+  status: {
+    ready: "Ready to scan",
+    scanning: "Scanning…",
+    done: "All items in stock",
+  },
   /** `core: true` = highlighted. The scan counter total is derived from this list. */
   groups: [
     {
@@ -242,7 +309,12 @@ export const stack = {
     {
       code: "BE-03",
       name: "Backend",
-      items: [{ name: "Node.js", core: true }, { name: "Express" }, { name: "REST APIs" }, { name: "Redis" }],
+      items: [
+        { name: "Node.js", core: true },
+        { name: "Express" },
+        { name: "REST APIs" },
+        { name: "Redis" },
+      ],
     },
     {
       code: "DB-04",
